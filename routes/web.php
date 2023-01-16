@@ -1,4 +1,6 @@
 <?php
+// namespace App\Http\Controller;
+use App\Http\Controllers\HomeController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/',[HomeController::class, 'index'])-> name('home.index');
+
+Route::get('/form', [HomeController::class, 'create'])-> name('home.create');
+
+Route::post('/book/new',[HomeController::class, 'store']);
+
+Route::get('/book/{book}/edit', [HomeController::class, 'edit'])-> name('home.edit');
+
+Route::put('/book/{book}', [HomeController::class, 'update']);
+
+Route::delete('/book/{book}', [HomeController::class, 'destroy']);
