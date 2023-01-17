@@ -6,8 +6,8 @@
 --}}
 
 @section('content')
-  <h1>올해의 추천</h1>
-  <table>
+  <h1 class='my-4'>올해의 추천</h1>
+  <table class='table table-hover'>
     <thead>
       <tr>
         <td>No.</td>
@@ -18,15 +18,25 @@
         <td>수정</td>
       </tr>
     </thead>
-    <tbody>
+    <tbody class='table-group-divider'>
       @foreach($books as $book)
         <tr>
           <td>{{$book->id}}</td>
           <td>{{$book->title}}</td>
-          <td>{{$book->author}}</td>
+          <td>
+            @if(!$book->author)
+              -
+            @else
+              {{ $book->author }}
+            @endif
+          </td>
           <td>{{$book->page}}</td>
           <td>{{$book->price}}</td>
-          <td><a href='/book/{{$book->id}}/edit' >수정</a></td>
+          <td>
+            <a href='/book/{{$book->id}}/edit'>
+              <button type='button' class="btn btn-light">수정</button>
+            </a>
+          </td>
         </tr>
       @endforeach
 

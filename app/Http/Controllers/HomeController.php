@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Book;
+use App\Http\Requests\FormDataRequest;
+// use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -18,18 +18,11 @@ class HomeController extends Controller
         return view('form');
     }
 
-    public function store(Request $request){
-        // 유효성 검사
-        $request -> validate([
-            'title' => 'required',
-            'price' => 'required',
-            'page' => 'required',
-        ]);
-        
-        $title = $request -> input('title');
-        $author = $request -> input('author');
-        $price = $request -> input('price');
-        $page = $request -> input('page');
+    public function store(FormDataRequest $request){
+        $title = request('title');
+        $author = request('author');
+        $price = request('price');
+        $page = request('page');
         
         Book::create([
             "title" => $title,
@@ -45,19 +38,12 @@ class HomeController extends Controller
         return view('edit',['book' => $book]);
     }
 
-    public function update(Book $book, Request $request) {
-        // 유효성 검사
-        $request -> validate([
-            'title' => 'required',
-            'price' => 'required',
-            'page' => 'required',
-        ]);
-
+    public function update(Book $book, FormDataRequest $request) {
         $book-> title = request('title');
         $book-> author = request('author');
         $book-> price = request('price');
         $book-> page = request('page');
-
+        
         $book-> save();
 
         return redirect() -> route('home.index');
