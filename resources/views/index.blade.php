@@ -59,7 +59,7 @@
             <td>
               @if($user_recommends -> where('book_id', $book->id) -> first())
                 <button type='button' class='btn btn-light' 
-                    onclick='location.href = '/book/{{ $book -> id }}/edit''
+                    onclick='location.href = "/book/{{ $book -> id }}/edit"'
                 >수정</button>
               @endif 
             </td>
