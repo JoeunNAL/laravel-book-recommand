@@ -1,6 +1,8 @@
 <?php
-// namespace App\Http\Controller;
+namespace App\Http\Controller;
+
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -15,14 +17,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[HomeController::class, 'index'])-> name('home.index');
+// Route::get('/db',[HomeController::class, 'db']);
 
-Route::get('/form', [HomeController::class, 'create'])-> name('home.create');
+Route::get('/',[HomeController::class, 'index']) -> name('home.index');
 
-Route::post('/book/new',[HomeController::class, 'store']);
+Route::get('/search',[HomeController::class, 'search']);
 
-Route::get('/book/{book}/edit', [HomeController::class, 'edit'])-> name('home.edit');
+Route::prefix('book') -> group(function () {
+    Route::get('/create', [HomeController::class, 'create']) -> middleware('auth') -> name('book.create');
 
-Route::put('/book/{book}', [HomeController::class, 'update']);
+    Route::post('',[HomeController::class, 'store']);
 
-Route::delete('/book/{book}', [HomeController::class, 'destroy']);
+    Route::get('/{book_id}/edit', [HomeController::class, 'edit']) -> name('book.edit');
+
+    Route::put('/{book_id}', [HomeController::class, 'update']);
+
+    Route::delete('/{book_id}', [HomeController::class, 'destroy']);
+
+    Route::get('/{book_id}/log', [HomeController::class, 'findLog']);
+});
+
+Route::get('/login', [LoginController::class, 'login']) -> name('login');
+
+Route::post('/login', [LoginController::class, 'enter']);
+
+Route::get('/signup', [LoginController::class, 'signup']) -> name('signup');
+
+Route::post('/signup', [LoginController::class, 'store']);
+
+Route::post('/logout', [LoginController::class, 'exit']) -> name('exit');
+
