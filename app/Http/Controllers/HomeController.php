@@ -38,9 +38,10 @@ class HomeController extends Controller
         $target_categories = array();
 
         if (request('selected_category') && request('selected_brand')) {
-            $target_categories = Category::where('name', request('selected_category')) -> where('brand_id',request('selected_brand')) -> get();
+            $target_categories = Category::getBothSatisfy('name', 'selected_category', 'brand_id', 'selected_brand')-> get();
+
         } else if (request('selected_category') || request('selected_brand')) {
-            $target_categories = Category::where('name', request('selected_category')) -> orWhere('brand_id',request('selected_brand')) -> get();
+            $target_categories = Category::getEitherSatisfy('name', 'selected_category', 'brand_id', 'selected_brand')-> get();
         };
         
         foreach ($target_categories as $target_category) {
@@ -140,9 +141,7 @@ class HomeController extends Controller
         $price = request('price');
         $page = request('page');
 
-        $brand_id = request('brand');
-        $category_name = request('category');
-        $category_id = Category::where('name', $category_name)->where('brand_id',$brand_id)->get()-> first() -> id;
+        $category_id = Category::getBothSatisfy('name', 'category', 'brand_id', 'brand')->get()-> first() -> id;
 
         Book::create([
             'title' => $title,
@@ -193,7 +192,8 @@ class HomeController extends Controller
         $update_book -> author = request('author');
         $update_book -> price = request('price');
         $update_book -> page = request('page');
-        $update_book -> category_id = Category::where('name', request('category')) -> where('brand_id', request('brand')) -> first() -> id;
+        $update_book -> category_id = Category::getBothSatisfy('name', 'category', 'brand_id', 'brand') -> first() -> id;
+       
         $update_book -> save();
 
         ModificationLog::create([
@@ -221,7 +221,6 @@ class HomeController extends Controller
     public function findLog($book_id) {
         $logs = ModificationLog::where('book_id',$book_id)-> orderByDesc('id')->get();
         
-        // - book 해당상품의 수정로그 조회 버튼클릭 -> 모달창 order by id desc
         return view('log', ['logs' => $logs]);
     }
 

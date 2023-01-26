@@ -17,5 +17,15 @@ class Category extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    public function scopeGetBothSatisfy($query, $first_column, $first_input_name, $second_column, $second_input_name)
+    {
+        return $query -> where($first_column, request($first_input_name)) -> where($second_column,request($second_input_name));
+    }
+
+    public function scopeGetEitherSatisfy($query, $first_column, $first_input_name, $second_column, $second_input_name)
+    {
+        return $query -> where($first_column, request($first_input_name)) -> orWhere($second_column,request($second_input_name));
+    }
 }
 
