@@ -7,10 +7,10 @@
       <div class='flex-column justify-content-between container'>
         <div class='d-flex'>
           <label for="search" class='flex-shrink-0 me-3'>카테고리 : </label>
-          <select name='selected_category' class='form-select form-select-sm mb-4 flex-grow-1' id='search' aria-label='.form-select-sm example'>
+          <select name='selected_category' class='form-select form-select-sm mb-4 flex-grow-1' id='search' aria-lfabel='.form-select-sm example'>
               <option value=''>카테고리 선택</option>
               @foreach($category_names as $category)
-                <option value='{{ $category }}'>{{ $category }}</option>
+                <option value='{{ $category }}' {{ request() -> get('selected_category') === $category ? 'selected' : null }}>{{ $category }}</option>
               @endforeach
           </select>
         </div>
@@ -19,7 +19,7 @@
             <select name='selected_brand' class='form-select form-select-sm flex-grow-1' id='search' aria-label='.form-select-sm example'>
               <option value=''>브랜드 선택</option>
               @foreach($brands as $brand)
-              <option value='{{ $brand -> id }}'>{{ $brand -> brand_name }}</option>
+                <option value='{{ $brand -> id }}' {{ request() -> get('selected_brand') == ($brand->id) ? 'selected' : null }}>{{ $brand -> brand_name }}</option>
               @endforeach
             </select>
         </div>

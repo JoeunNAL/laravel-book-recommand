@@ -33,24 +33,26 @@ class HomeController extends Controller
     }
 
     public function search() {
-        $books = collect();
-        // $books = array();
-        $target_categories = array();
+        $books = array();
+        $target_categories = Book::get();
 
-        if (request('selected_category') && request('selected_brand')) {
-            $target_categories = Category::getBothSatisfy('name', 'selected_category', 'brand_id', 'selected_brand')-> get();
+        if(!request('selected_category') && !request('selected_brand')){
+            // 카테고리, 브랜드 둘다 선택하지 않았을 경우 전체 렌더링
+            $books = Book::get();
 
-        } else if (request('selected_category') || request('selected_brand')) {
-            $target_categories = Category::getEitherSatisfy('name', 'selected_category', 'brand_id', 'selected_brand')-> get();
+        } else {
+            if (request('selected_category') && request('selected_brand')) {
+                $target_categories = Category::getBothSatisfy('name', 'selected_category', 'brand_id', 'selected_brand') -> get();
+    
+            } else {
+                $target_categories = Category::getEitherSatisfy('name', 'selected_category', 'brand_id', 'selected_brand') -> get();
+            };
+            
+            foreach ($target_categories as $target_category) {
+                $target_category_books = $target_category -> books() -> get() -> all();
+                $books = array_merge($books, $target_category_books);
+            };
         };
-        
-        foreach ($target_categories as $target_category) {
-            $target_category_books = $target_category -> books() -> get();
-            $books = $books -> concat($target_category_books);
-            // $target_category_books = $target_category -> books() -> get() -> all();
-            // $books = array_merge($books, $target_category_books);
-        };
-
 
         $brands = Brand::get();
         $categories = Category::get();
