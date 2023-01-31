@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -64,5 +63,17 @@ class LoginController extends Controller
         request() -> session() -> regenerateToken();
         
         return redirect() -> route('home.index');
+    }
+
+    public function confirmEmail() {
+        $result = true;
+        $request_email = request('email');
+        $is_possible = User::firstWhere('email',$request_email);
+
+        if($is_possible){
+            $result = false;
+        }
+
+        return response()->json(['possible' => $result]);
     }
 }

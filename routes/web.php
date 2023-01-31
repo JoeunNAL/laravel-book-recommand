@@ -37,13 +37,19 @@ Route::prefix('book') -> group(function () {
     Route::get('/{book_id}/log', [HomeController::class, 'findLog']);
 });
 
-Route::get('/login', [LoginController::class, 'login']) -> name('login');
+Route::prefix('login') -> group(function () {
+    Route::get('', [LoginController::class, 'login']) -> name('login');
 
-Route::post('/login', [LoginController::class, 'enter']);
+    Route::post('', [LoginController::class, 'enter']);
+});
 
-Route::get('/signup', [LoginController::class, 'signup']) -> name('signup');
+Route::prefix('signup') -> group(function () {
+    Route::get('', [LoginController::class, 'signup']) -> name('signup');
 
-Route::post('/signup', [LoginController::class, 'store']);
+    Route::post('', [LoginController::class, 'store']);
+
+    Route::post('/email', [LoginController::class, 'confirmEmail']);
+});
 
 Route::post('/logout', [LoginController::class, 'exit']) -> name('exit');
 
