@@ -23,7 +23,7 @@ function emailCheck() {
                 if (
                     xhr.getResponseHeader("Content-Type") === "application/json"
                 ) {
-                    response = JSON.parse(xhr.response);
+                    response = JSON.parse(response);
                 }
 
                 if (response.possible && checkValidationEmail(email_value)) {
@@ -40,7 +40,6 @@ function emailCheck() {
         $('meta[name="csrf-token"]').attr("content")
     );
     xhr.setRequestHeader("Content-type", "application/json");
-
     xhr.send(JSON.stringify(body));
 }
 

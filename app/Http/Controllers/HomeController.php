@@ -223,7 +223,7 @@ class HomeController extends Controller
     public function findLog($book_id) {
         $logs = ModificationLog::where('book_id',$book_id)-> orderByDesc('id')->get();
         
-        return view('log', ['logs' => $logs]);
+        return response() -> json(['logs' => $logs]);
     }
 
     public function getCategoryList() {

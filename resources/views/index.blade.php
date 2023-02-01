@@ -6,7 +6,7 @@
     <form action='/search' method='GET' class='d-flex mb-4 search-select-container justify-content-between'>
       <div class='flex-column justify-content-between container'>
         <div class='d-flex'>
-          <label for="search" class='flex-shrink-0 me-3'>카테고리 : </label>
+          <label for='search' class='flex-shrink-0 me-3'>카테고리 : </label>
           <select name='selected_category' class='form-select form-select-sm mb-4 flex-grow-1' id='search' aria-lfabel='.form-select-sm example'>
               <option value=''>카테고리 선택</option>
               @foreach($category_names as $category)
@@ -15,7 +15,7 @@
           </select>
         </div>
         <div class='d-flex'>
-            <label for="search" class='flex-shrink-0 me-3'>브랜드 : </label>
+            <label for='search' class='flex-shrink-0 me-3'>브랜드 : </label>
             <select name='selected_brand' class='form-select form-select-sm flex-grow-1' id='search' aria-label='.form-select-sm example'>
               <option value=''>브랜드 선택</option>
               @foreach($brands as $brand)
@@ -64,11 +64,33 @@
               @endif 
             </td>
             <td>
-              <a href='/book/{{ $book -> id }}/log'>로그 조회</a>
+              <button type='button' class='active-log-search-btn btn btn-outline-secondary' data-route='/book/{{ $book -> id }}/log' data-bs-toggle='modal' data-bs-target='#exampleModal'>로그 조회</button>
             </td>
           </tr>
         @endforeach
       </tbody>
     </table>
   </section>
+  <section class='modal fade' id='exampleModal' tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h2 class='modal-title' id='exampleModalLabel'>로그내역</h2>
+          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+        </div>
+        <div class='modal-body'>
+        <table class='table table-hover'>
+          <thead>
+            <tr>
+              <td>일/시</td>
+              <td>내역</td>
+            </tr>
+          </thead>
+          <tbody id='log-table' class='table-group-divider'></tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src='assets/logModal.js'></script>
 @endsection
