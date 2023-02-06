@@ -11,7 +11,7 @@
         <table class="container table table-hover">
           <thead>
             <tr>
-              <th scope="col" >일/시</th>
+              <th scope="col ellipsis-1">일/시</th>
               <th scope="col">내역</th>
             </tr>
           </thead>

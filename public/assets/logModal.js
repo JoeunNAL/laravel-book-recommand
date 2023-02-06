@@ -34,8 +34,12 @@ $(document).ready(function () {
 
     function appendRowHtml(log) {
         const row_html = `<tr>
-                            <td scope='row'>${log.created_at}</td>
-                            <td>${log.history}</td>
+                            <td class="max-width-120">
+                                <div class="ellipsis-1">
+                                        ${log.created_at}
+                                </div>
+                            </td>
+                            <td class="col-6">${log.history}</td>
                         </tr>`;
         log_table_body_html.append(row_html);
     }
