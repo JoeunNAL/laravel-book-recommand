@@ -46,7 +46,7 @@
               <select name="category" id="category" class="custom-select mb-3">
                 @foreach ($category_names as $category)
                   <option value="{{ $category }}" 
-                  @if ($category === $book -> category -> name)1 
+                  @if ($category === $book -> category -> name)
                   selected
                   @endif >{{ $category }}</option>
                 @endforeach

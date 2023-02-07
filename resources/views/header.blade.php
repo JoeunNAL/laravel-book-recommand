@@ -7,8 +7,12 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav ml-md-auto text-center min-width-150">
       <li class="nav-item mx-3 row min-width-150">
-        <a class="nav-link col-lg-8 col-12" href={{route("home.index")}}>추천 목록</a>
-        <a class="nav-link col-lg-4 col-12" href={{route("book.create")}}>등록</a>
+        <a class="nav-link col-lg-8 col-12 {{ request()->path() === "/" ? 'active' : '' }}" href={{route("home.index")}}>
+        추천 목록
+        </a>
+        <a class="nav-link col-lg-4 col-12 {{ request()->path() === "book/create" ? 'active' : '' }}" href={{route("book.create")}}>
+        등록
+        </a>
       </li>
       @if(Auth::user())
       <li class="nav-item mx-3 mt-3 my-auto mb-2 mb-md-0">

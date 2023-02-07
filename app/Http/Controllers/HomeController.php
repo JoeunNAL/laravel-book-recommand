@@ -101,23 +101,6 @@ class HomeController extends Controller
     //     Brand::create([
     //         'brand_name' => 'Rna',
     //     ]);
-    //     User::create([
-    //         'name' => 'ej',
-    //         'email' => 'ej@naver.com',
-    //         'password' => "1234",
-    //     ]);
-    //     User::create([
-    //         'name' => 'jj',
-    //         'email' => 'jj@naver.com',
-    //         'password' => "1234",
-    //     ]);
-    //     Book::create([
-    //         'title' => 'ccor   df',
-    //         'author' => "au2thoer",
-    //         'price' => 13434234,
-    //         'page' => 12,
-    //         'category_id'=> 2, 
-    //     ]);
     // }
 
 
