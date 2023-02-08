@@ -40,7 +40,7 @@
             <label for="category">카테고리</label>
             <select name="category" id="category" class="custom-select mb-3">
               @foreach ($categories as $category)
-                <option value="{{$category}}">{{ $category }}</option>
+                <option value="{{$category -> name }}">{{ $category -> name}}</option>
               @endforeach
             </select>
           </div>

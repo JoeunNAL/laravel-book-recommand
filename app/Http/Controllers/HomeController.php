@@ -16,108 +16,47 @@ class HomeController extends Controller
     public function index() {
         $books = Book::get();
         $brands = Brand::get();
-        $categories = Category::get();
-        
-        // 카테고리 중복 요소 제거
-        $category_names = array();
-        foreach($categories as $category){
-            if(!in_array($category->name, $category_names)){
-                array_push($category_names, $category->name);
-            };
-        };
-        
-        // 현재 로그인한 유저의 로그 기록 : 수정버튼 표기용 
-        $user_recommends = ModificationLog::where('user_id', Auth::id())-> get();
+        $categories = Category::distinct() -> get('name');
 
-        return view('index', ['books' => $books, 'user_recommends' => $user_recommends, 'brands' => $brands, 'category_names' => $category_names]);
+        // 수정버튼 표기용 : 로그인한 사용자의 작성 목록
+        $user_recommends = ModificationLog::where('user_id', Auth::id()) -> get();
+
+        return view('index', ['books' => $books, 'user_recommends' => $user_recommends, 'brands' => $brands, 'categories' => $categories]);
     }
 
     public function search() {
-        $books = array();
-        $target_categories = Book::get();
-
-        if(!request('selected_category') && !request('selected_brand')){
-            // 카테고리, 브랜드 둘다 선택하지 않았을 경우 전체 렌더링
-            $books = Book::get();
-
-        } else {
-            if (request('selected_category') && request('selected_brand')) {
-                $target_categories = Category::getBothSatisfy('name', 'selected_category', 'brand_id', 'selected_brand') -> get();
-    
-            } else {
-                $target_categories = Category::getEitherSatisfy('name', 'selected_category', 'brand_id', 'selected_brand') -> get();
-            };
-            
-            foreach ($target_categories as $target_category) {
-                $target_category_books = $target_category -> books() -> get() -> all();
-                $books = array_merge($books, $target_category_books);
-            };
-        };
-
+        $books = Book::get();
         $brands = Brand::get();
-        $categories = Category::get();
-        
-        // 카테고리 중복 요소 제거
-        $category_names = array();
-        foreach ($categories as $category){
-            if(!in_array($category->name, $category_names)){
-                array_push($category_names, $category->name);
+        $categories = Category::distinct() -> get('name');
+
+        // 수정버튼 표기용 : 로그인한 사용자의 작성 목록
+        $user_recommends = ModificationLog::where('user_id', Auth::id())-> get();
+
+        // 카테고리, 브랜드 둘 중에 하나라도 선택된 경우, books 목록 취합
+        if(request('selected_category') || request('selected_brand')){
+            if (request('selected_category') && request('selected_brand')) {
+                $books = Category::getBothSatisfy('name', 'selected_category', 'brand_id', 'selected_brand') -> first() -> books() -> get();
+            
+            } else {
+                // 하나만 선택했을 경우 여러 카테고리 id 선별
+                $target_categories = Category::getEitherSatisfy('name', 'selected_category', 'brand_id', 'selected_brand') -> get();
+
+                $books = array();
+                foreach ($target_categories as $target_category) {
+                    $target_category_books = $target_category -> books() -> get() -> all();
+                    $books = array_merge($books, $target_category_books);
+                };
             };
         };
 
-        // 현재 로그인한 유저의 로그 기록 : 수정버튼 표기용 
-        $user_recommends = ModificationLog::where('user_id', Auth::id())-> get();
-        foreach($target_categories as $target){
-            if(!in_array($category->name, $category_names)){
-            array_push($books);
-            };
-        }
-
-        return view('index', ['books' => $books , 'user_recommends' => $user_recommends, 'brands' => $brands, 'category_names' => $category_names]);
+        return view('index', ['books' => $books , 'user_recommends' => $user_recommends, 'brands' => $brands, 'categories' => $categories]);
     }
 
-    // public function db() {
-    //     $books = Book::get();
-
-    //     Category::create([
-    //         'name' => '소설',
-    //         'brand_id' => 1,
-    //     ]);
-    //     Category::create([
-    //         'name' => '역사',
-    //         'brand_id' => 1,
-    //     ]);
-    //     Category::create([
-    //         'name' => '소설',
-    //         'brand_id' => 2,
-    //     ]);
-    //     Category::create([
-    //         'name' => '역사',
-    //         'brand_id' => 2,
-    //     ]);
-    //     Brand::create([
-    //         'brand_name' => '꿈',
-    //     ]);
-    //     Brand::create([
-    //         'brand_name' => 'Rna',
-    //     ]);
-    // }
-
-
     public function create() {
-        $categories = Category::get();
-        
-        // 카테고리 중복 요소 제거
-        $category_names = array();
-        foreach($categories as $category){
-            if(!in_array($category->name, $category_names)){
-                array_push($category_names, $category->name);
-            }
-        }
-
+        $categories = Category::distinct() -> get('name');
         $brands = Brand::get();
 
-        return view('form',['categories'=>$category_names, 'brands' => $brands]);
+        return view('form',['categories' => $categories, 'brands' => $brands]);
     }
 
     public function store(FormDataRequest $request){
@@ -126,18 +65,18 @@ class HomeController extends Controller
         $price = request('price');
         $page = request('page');
 
-        $category_id = Category::getBothSatisfy('name', 'category', 'brand_id', 'brand')->get()-> first() -> id;
+        $category_id = Category::getBothSatisfy('name', 'category', 'brand_id', 'brand') -> first() -> id;
 
         Book::create([
             'title' => $title,
             'author' => $author,
             'price' => $price,
             'page' => $page,
-            'category_id' =>$category_id
+            'category_id' => $category_id
         ]);
 
         // 로그 기록
-        $new_book_id = Book::latest()->first()->id;
+        $new_book_id = Book::latest() -> first() -> id;
 
         ModificationLog::create([
             'user_id' => Auth::id(),
@@ -155,19 +94,10 @@ class HomeController extends Controller
         abort_if(Auth::id()!==$book_user_id, 403);
 
         $target_book = Book::where('id', $book_id) -> first();
-        
         $brands = Brand::get();
+        $categories = Category::distinct() -> get('name');
 
-        // 카테고리 중복 요소 제거
-        $categories = Category::get();
-        $category_names = array();
-        foreach ($categories as $category) {
-            if(!in_array($category->name,$category_names)){
-                array_push($category_names,$category->name);
-            }
-        }
-
-        return view('edit',['book' => $target_book, 'category_names'=>$category_names, 'brands' => $brands]);
+        return view('edit',['book' => $target_book, 'categories' => $categories, 'brands' => $brands]);
     }
 
     public function update($book_id, FormDataRequest $request) {
@@ -178,7 +108,7 @@ class HomeController extends Controller
         $update_book -> price = request('price');
         $update_book -> page = request('page');
         $update_book -> category_id = Category::getBothSatisfy('name', 'category', 'brand_id', 'brand') -> first() -> id;
-       
+
         $update_book -> save();
 
         ModificationLog::create([
@@ -204,23 +134,36 @@ class HomeController extends Controller
     }
 
     public function findLog($book_id) {
-        $logs = ModificationLog::where('book_id',$book_id)-> orderByDesc('id')->get();
+        $logs = ModificationLog::where('book_id',$book_id) -> orderByDesc('id') -> get();
         
         return response() -> json(['logs' => $logs]);
     }
 
-    public function getCategoryList() {
-        $categories = Category::get();
-        
-        // 카테고리 중복 요소 제거
-        $category_names = array();
-        foreach($categories as $category){
-            if(!in_array($category->name, $category_names)){
-                array_push($category_names, $category->name);
-            }
-        }
-        return $category_names;
-    }
+    // DB 카테고리, 브랜드 목록 생성 
+    // public function db() {
+    //     Category::create([
+    //         'name' => '소설',
+    //         'brand_id' => 1,
+    //     ]);
+    //     Category::create([
+    //         'name' => '역사',
+    //         'brand_id' => 1,
+    //     ]);
+    //     Category::create([
+    //         'name' => '소설',
+    //         'brand_id' => 2,
+    //     ]);
+    //     Category::create([
+    //         'name' => '역사',
+    //         'brand_id' => 2,
+    //     ]);
+    //     Brand::create([
+    //         'brand_name' => '꿈',
+    //     ]);
+    //     Brand::create([
+    //         'brand_name' => 'Rna',
+    //     ]);
+    // }
 }
 
 

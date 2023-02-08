@@ -44,11 +44,11 @@
             <div class="col-12 col-md-6">
               <label for="category">카테고리</label>
               <select name="category" id="category" class="custom-select mb-3">
-                @foreach ($category_names as $category)
-                  <option value="{{ $category }}" 
-                  @if ($category === $book -> category -> name)
+                @foreach ($categories as $category)
+                  <option value="{{ $category -> name }}" 
+                  @if ($category -> name === $book -> category -> name)
                   selected
-                  @endif >{{ $category }}</option>
+                  @endif >{{ $category -> name }}</option>
                 @endforeach
               </select>
             </div>

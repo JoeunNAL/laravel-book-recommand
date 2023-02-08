@@ -10,9 +10,9 @@
             <label for="search" class="col-12 col-sm-2 col-md-3 p-0">카테고리 : </label>
             <select name="selected_category" class="col-12 col-sm-10 col-md-9 custom-select" id="search" aria-lfabel=".form-select-sm example">
                 <option value="">카테고리 선택</option>
-                @foreach($category_names as $category)
-                <option value="{{ $category }}" {{ request() -> get("selected_category") === $category ? "selected" : null }}>
-                  {{ $category }}
+                @foreach($categories as $category)
+                <option value="{{ $category -> name }}" {{ request() -> get("selected_category") === $category -> name ? "selected" : null }}>
+                  {{ $category -> name }}
                 </option>
                 @endforeach
             </select>
